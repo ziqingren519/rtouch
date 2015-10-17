@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="renderer" content="webkit"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+	<title>Rtouch配置项详解</title>
+	<link rel="stylesheet" href="styles/default.css">
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css"> -->
+	<link class="codestyle" rel="stylesheet" href="styles/color-brewer.css">
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css">	 -->
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/sunburst.css"> -->
+	<link rel="stylesheet" href="styles/css.css">
+  <script>
+
+  </script>
+</head>
+<body>
+<h1 class="title_h1">Rtouch.js</h1>
+<p class="title_p">轻量级的javascript触摸框架  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：韧青子</p>
+<div class="title_links">
+    <a href="index.html">首页</a> • <a href="ini.html">文档</a> • <a href="demos.html">DEMOS</a> • <a href="ext.html">扩展</a>
+</div>
+
+<div class="box">
+	<h2 class="box_title">API</h2>
+	<ul class="ini_ul">
+		<li class="ini_li"><span class="s1">方法</span><span class="s2">介绍</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">tap</font></span><span class="s2">手指点击触发</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">swipestart</font></span><span class="s2">手指触摸的时候触发</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">swipeend</font></span><span class="s2">手指松开的时候触发</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">swipeleft</font></span><span class="s2">向左滑动，手指松开后触发,执行一次</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">swiperight</font></span><span class="s2">向右滑动，手指松开后触发,执行一次</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">swipetop</font></span><span class="s2">向上滑动，手指松开后触发,执行一次</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">swipedown</font></span><span class="s2">向下滑动，手指松开后触发,执行一次</span></li>
+		<li class="ini_li"><span class="s1">holdleft</span><span class="s2">向左滑动，手指移动的时候触发,一直执行</span></li>
+		<li class="ini_li"><span class="s1">holdright</span><span class="s2">向右滑动，手指移动的时候触发,一直执行</span></li>
+		<li class="ini_li"><span class="s1">holdtop</span><span class="s2">向上滑动，手指移动的时候触发,一直执行</span></li>
+		<li class="ini_li"><span class="s1">holddown</span><span class="s2">向下滑动，手指移动的时候触发,一直执行</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">holdx</font></span><span class="s2">横向移动，手指移动的时候触发,一直执行</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">holdy</font></span><span class="s2">竖向移动，手指移动的时候触发,一直执行</span></li>
+		<li class="ini_li"><span class="s1"><font class="f1">hold</font></span><span class="s2">手指移动的时候触发,一直执行</span></li>
+	</ul>
+	<pre><code class='javascript'>
+  var rtouch = new Rtouch(obj); 
+  rtouch.tap = function(e){ ... };
+  rtouch.swipeleft = function(e){ ... };   
+  ....
+  rtouch.hold = function(e){ ... };   
+	</code></pre>
+	<h2 class="box_title">配置</h2>
+
+	<ul class="ini_ul">
+		<li class="ini_li"><span class="s1">配置</span><span class="s2">介绍</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">SWIPE_TRESHOLD</font></span><span class="s2"><font class="f1">数值型</font> 默认20 — 最少滑动距离</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">PREDEF</font></span><span class="s2"><font class="f1">数组型</font> 默认[1,0] <br />[X轴移动是否取消默认，Y轴移动是否取消默认](默认取消X轴的默认) <br />— 阻止默认事件 一般用来阻止滚动条滚动 </span></li>
+	</ul>
+	<pre><code class='javascript'>
+  var rtouch = new Rtouch(obj,{
+  	SWIPE_TRESHOLD : 50,    //最少滑动距离 改为50
+  	PREDEF : [1,1]    //阻止X和Y轴的默认事件
+  });    
+	</code></pre>
+	
+	<h2 class="box_title">传递参数</h2>
+
+	<ul class="ini_ul">
+		<li class="ini_li"><span class="s1">参数</span><span class="s2">介绍</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">cX</font></span><span class="s2">手指第一次触摸时的X轴的距离</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">cY</font></span><span class="s2">手指第一次触摸时的Y轴的距离</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">x</font></span><span class="s2">手指当前的X轴距离</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">y</font></span><span class="s2">手指当前的Y轴距离</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">type</font></span><span class="s2">当前的滑动状态 格式："swipeleft"</span></li>
+		<li class="ini_li"><span class="s1"><font class="f3">e</font></span><span class="s2">默认的触摸对象</span></li>
+	</ul>
+	<pre><code class='javascript'>
+  var rtouch = new Rtouch(obj); 
+  rtouch.swipeleft = function(e){ 
+  	console.log("type:"+e.type+" cX:"+e.cX+" cY:"+e.cX+" x:"+e.x+" y:"+e.y);
+	console.log(e.e);
+   };
+	</code></pre>
+</div>
+
+
+	<script src="script/jquery-2.1.1.min.js"></script>
+	<script src="script/highlight.pack.js"></script>
+	<script src="script/Rtouch.js"></script>
+	<script>
+	hljs.initHighlightingOnLoad();
+	</script>
+</body>
+</html>

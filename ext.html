@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="renderer" content="webkit"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+
+	<title>Rtouch 扩展</title>
+	<link rel="stylesheet" href="styles/default.css">
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css"> -->
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/color-brewer.css"> -->
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css">	 -->
+	<link class="codestyle" rel="stylesheet" href="styles/sunburst.css">
+	<link rel="stylesheet" href="styles/css.css">
+  <script>
+
+  </script>
+</head>
+<body>
+<h1 class="title_h1">Rtouch.js</h1>
+<p class="title_p">轻量级的javascript触摸框架  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：韧青子</p>
+<div class="title_links">
+    <a href="index.html">首页</a> • <a href="ini.html">文档</a> • <a href="demos.html">DEMOS</a> • <a href="ext.html">扩展</a>
+</div>
+
+<div class="box">
+  <h2 id="a1" class="box_title">tmove函数扩展</h2>
+
+  <pre><code class='javascript'>
+  function tmove(o){   
+    if (o.dir === "x"||"y") { alert("错误，dir为x或y"); return;};
+    var span = o.span,len = span.length > 1 ? span.length : parseInt(span.innerHTML),dir = o.dir || "x",con = o.con,set = -o.set || (dir === "x" ? -con.offsetWidth : -con.offsetHeight )/len,index = 0,distance,base = -set/4,autorun = o.autorun,movestates,setI,obj;
+    function go(i){
+      index = i;
+      var tran = dir === "x" ? i*set +"px,0px" : "0px,"+i*set +"px" ; 
+      con.style.Transform = "translate("+ i*set +"px)";
+      con.style.WebkitTransform = "translate3d("+ i*set +"px,0px,0px)";
+      o.fn ? o.fn(i) : 1;
+    };
+    if (span.length > 1) {
+      for (var i = 0; i < span.length; i++) {
+        span[i].onclick = function(i){
+          return function(){
+            run(i);
+          };
+        }(i);
+      };
+    }else{
+      span.innerHTML = "<font>1</font>"+"/"+len;
+    };
+
+    function run(i){
+      i = i < 0 ? 0 : i > (len-1) ? (len-1) : i;
+      if (span.length > 1) {
+        for (var a = 0; a < span.length; a++) {
+          span[a].className = "";
+        };
+        span[i].className = "hover";
+      }else {
+        span.innerHTML = "<font>"+(i+1)+"</font>"+"/"+len;
+      }
+      go(i);
+    };
+
+    function autorunfun(){
+      setI = setInterval(function(){
+        index = index+1 > (len-1) ? 0 : index+1;
+        run(index);
+      },autorun);
+    };
+    function move(e){
+      if ((e.type === "holdleft" && index >= len-1) || (e.type === "holdright" && index <= 0)) { return;}
+      movestates = 1;
+      distance = e.x-e.cachedX ;
+      con.style.Transform = "translate("+ (index*set+distance) +"px)";
+      con.style.WebkitTransform = "translate3d("+ (index*set+distance) +"px,0px,0px)";
+    }
+    
+    obj = new Rtouch(con);
+    obj.swipestart = function(e){
+      con.style.WebkitTransitionDuration = "0s";
+      con.style.TransitionDuration= "0s";
+      autorun ? clearInterval(setI) : 1 ;
+    };
+    
+    dir === "x" ? obj.holdx = move : obj.holdy = move;
+    obj.swipeend=function(e){
+      con.style.WebkitTransitionDuration = "0.3s";
+      con.style.TransitionDuration= "0.3s";
+      if (!movestates) {return};
+      -distance > base ? run(index+1) : distance > base ? run(index-1) : run(index);
+      movestates = 0;
+      autorun ? autorunfun() : 1 ;
+    };
+    autorun ? autorunfun() : 1;
+  };
+  </code></pre>
+  <h2 class="demo_title">tmove用法</h2>
+  <pre><code class='javascript'>
+  tmove({
+    span : document.getElementById('spanbox').getElementsByTagName('span'),
+    con : document.getElementById('conbox'),
+    fn : function(i){
+      console.log(i);
+    }
+    /*其他可选配置  可选配置项见以下*/
+  });
+  </code></pre>
+  <h2 class="demo_title">tmove配置</h2>
+  <h2 class="ext_h3">tmove(tmove配置数组，Rtouch配置数组 可选)</h2>
+  <ul class="ini_ul">
+    <li class="ini_li"><span class="s1">配置项</span><span class="s4">介绍</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">span</font></span><span class="s4"><font class="f1">[必选]</font> 传过来索引的数组，例：document.getElementById('spanbox').getElementsByTagName('span')</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">silde</font></span><span class="s4"><font class="f1">[必选]</font> 内容的最外层对象</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">sildebox</font></span><span class="s4"><font class="f1">[必选]</font> 承载内容的对象 主要靠它滚动</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">dir</font></span><span class="s4"><font class="f1">[可选 "x"或"y" 默认为"x"]</font> "x"为横向滚动 "y"为竖向滚动</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">spanclass</font></span><span class="s4"><font class="f1">[可选 默认为"hover"]</font> 当前索引所添加的class名称</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">fn</font></span><span class="s4"><font class="f1">[可选]</font> 回调函数 每次滚动后执行后的函数</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">autorun</font></span><span class="s4"><font class="f1">[可选 默认不自动运行]</font> 是否自动运行 如过自动运行则传来毫秒运行的时间 例：3000 (每隔3秒自动运行)</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">set</font></span><span class="s4"><font class="f1">[可选 默认"总宽度/索引数量"]</font> 每次滚动的距离</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">base</font></span><span class="s4"><font class="f1">[可选 默认"超过单次滚动的1/4距离"]</font> 最小触摸滚动的距离</span></li>
+    <li class="ini_li"><span class="s1"><font class="f3">time</font></span><span class="s4"><font class="f1">[可选 默认"300ms"]</font> 滚动所花费的时间</span></li>
+
+  </ul>
+  <h2 class="demo_title">tmove DEMOS</h2>
+  <h2 class="ext_h3">横向幻灯片 自动运行</h2>
+  <div class="silde hand" id="silde">
+    <ul class="sildebox" id="sildebox">
+       <li class="sideli">side1</li>
+       <li class="sideli">side2</li>
+       <li class="sideli">side3</li>
+       <li class="sideli">side4</li>
+       <li class="sideli">side5</li>
+       <li class="sideli">side6</li>
+       <li class="sideli">side7</li>
+       <li class="sideli">side8</li>
+    </ul>
+    <div class="indexes"><span class="hover"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <pre><code class='html'>
+  &lt;div class="silde hand" id="silde"&gt;
+    &lt;ul class="sildebox" id="sildebox"&gt;
+      &lt;li class="sideli"&gt;side1&lt;/li&gt;
+      &lt;li class="sideli"&gt;side2&lt;/li&gt;
+      &lt;li class="sideli"&gt;side3&lt;/li&gt;
+      &lt;li class="sideli"&gt;side4&lt;/li&gt;
+      &lt;li class="sideli"&gt;side5&lt;/li&gt;
+      &lt;li class="sideli"&gt;side6&lt;/li&gt;
+      &lt;li class="sideli"&gt;side7&lt;/li&gt;
+      &lt;li class="sideli"&gt;side8&lt;/li&gt;
+    &lt;/ul&gt;
+    //滚动的次数取的为span的个数
+    &lt;div class="indexes"&gt;&lt;span class="hover"&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;
+  &lt;/div&gt;
+  </code></pre>
+  <pre><code class='javascript'>
+  tmove({
+    silde : document.getElementById('silde'),
+    sildebox : document.getElementById('sildebox'),
+    span : document.getElementById('silde').getElementsByTagName('span'),
+    autorun : 3000
+  });
+  </code></pre>
+
+  <h2 class="ext_h3">横向幻灯片 数字型 --- 回掉函数应用 <span id="fn"></span></h2>
+  <div class="silde hand" id="silde3">
+    <ul class="sildebox" id="sildebox3">
+       <li class="sideli">side1</li>
+       <li class="sideli">side2</li>
+       <li class="sideli">side3</li>
+       <li class="sideli">side4</li>
+       <li class="sideli">side5</li>
+       <li class="sideli">side6</li>
+       <li class="sideli">side7</li>
+       <li class="sideli">side8</li>
+    </ul>
+    <div class="shuzi"><span>8</span></div>
+  </div>
+  <pre><code class='html'>
+  &lt;div class="silde hand" id="silde3"&gt;
+    &lt;ul class="sildebox" id="sildebox3"&gt;
+      &lt;li class="sideli"&gt;side1&lt;/li&gt;
+      &lt;li class="sideli"&gt;side2&lt;/li&gt;
+      &lt;li class="sideli"&gt;side3&lt;/li&gt;
+      &lt;li class="sideli"&gt;side4&lt;/li&gt;
+      &lt;li class="sideli"&gt;side5&lt;/li&gt;
+      &lt;li class="sideli"&gt;side6&lt;/li&gt;
+      &lt;li class="sideli"&gt;side7&lt;/li&gt;
+      &lt;li class="sideli"&gt;side8&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;div class="shuzi"&gt;&lt;span&gt;8&lt;/span&gt;&lt;/div&gt;  //与上面例子不同的是 只有一个span 且里面的数字为滑动的总次数
+  &lt;/div&gt;
+  </code></pre>
+  <pre><code class='javascript'>
+  tmove({
+    silde : document.getElementById('silde3'),
+    sildebox : document.getElementById('sildebox3'),
+    span : document.getElementById('silde3').getElementsByTagName('span')[0],  //此处为单个对象 上面例子为数组
+    fn : function(i){
+      document.getElementById('fn').innerText = "执行完成"+i;
+    }
+  });
+  </code></pre>
+
+  <h2 class="ext_h3">竖向幻灯片</h2>
+  <div class="silde hand shusilde" id="silde1">
+    <ul class="sildebox" id="sildebox1">
+       <li class="sideli">side1</li>
+       <li class="sideli">side2</li>
+       <li class="sideli">side3</li>
+       <li class="sideli">side4</li>
+       <li class="sideli">side5</li>
+       <li class="sideli">side6</li>
+       <li class="sideli">side7</li>
+       <li class="sideli">side8</li>
+    </ul>
+    <div class="indexes"><span class="hover"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <pre><code class='javascript'>
+  tmove({
+    silde : document.getElementById('silde1'),
+    sildebox : document.getElementById('sildebox1'),
+    span : document.getElementById('silde1').getElementsByTagName('span'),
+    dir : "y"
+  },{
+    PREDEF : [0,1]
+  });
+  </code></pre>
+
+  <h2 class="ext_h3">配置项set 演示</h2>
+  <div class="silde hand setsilde" id="silde2">
+    <ul class="sildebox" id="sildebox2">
+       <li class="sideli">side1</li>
+       <li class="sideli">side2</li>
+       <li class="sideli">side3</li>
+       <li class="sideli">side4</li>
+       <li class="sideli">side5</li>
+       <li class="sideli">side6</li>
+       <li class="sideli">side7</li>
+       <li class="sideli">side8</li>
+    </ul>
+    <div class="indexes"><span class="hover"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <pre><code class='javascript'>
+  tmove({
+    silde : document.getElementById('silde2'),
+    sildebox : document.getElementById('sildebox2'),
+    span : document.getElementById('silde2').getElementsByTagName('span'),
+    set : 339
+  });
+  </code></pre>
+</div>
+
+
+	<script src="script/jquery-2.1.1.min.js"></script>
+	<script src="script/highlight.pack.js"></script>
+	<script src="script/Rtouch.js"></script>
+	<script>
+	hljs.initHighlightingOnLoad();
+
+  function tmove(o,ini){  
+    var dir = o.dir || "x";
+    if (dir !== "x" && dir !== "y") { alert("错误，dir为x或y"); return;};
+    var span = o.span,len = span.length > 1 ? span.length : parseInt(span.innerHTML),con = o.sildebox,set = o.set ? -parseInt(o.set) : dir === "x" ? -o.silde.clientWidth : -o.silde.clientHeight ,index = 0,distance,base = o.base || -set/4,autorun = o.autorun,time = o.time || "300ms",movestates,setI,obj;
+    function go(i){
+      index = i;
+      var tran = dir === "x" ? i*set +"px,0px" : "0px,"+i*set +"px" ; 
+      con.style.Transform = "translate("+ tran +")";
+      con.style.WebkitTransform = "translate3d("+ tran +",0px)";
+      o.fn && o.fn(i);
+    };
+    if (span.length > 1) {
+      for (var i = 0; i < span.length; i++) {
+        span[i].onclick = function(i){
+          return function(){
+            run(i);
+          };
+        }(i);
+      };
+    }else{
+      span.innerHTML = "<font>1</font>"+"/"+len;
+    };
+
+    function run(i){
+      i = i < 0 ? 0 : i > (len-1) ? (len-1) : i;
+      if (span.length > 1) {
+        for (var a = 0; a < span.length; a++) {
+          span[a].className = "";
+        };
+        span[i].className = o.spanclass || "hover";
+      }else {
+        span.innerHTML = "<font>"+(i+1)+"</font>"+"/"+len;
+      }
+      go(i);
+    };
+
+    function autorunfun(){
+      setI = setInterval(function(){
+        index = index+1 > (len-1) ? 0 : index+1;
+        run(index);
+      },autorun);
+    };
+    function move(e){
+      movestates = 1;
+      distance = dir === "x" ? e.x-e.cX :  e.y-e.cY ;
+      var tran = dir === "x" ? (index*set+distance) +"px,0px" : "0px,"+(index*set+distance) +"px" ; 
+      con.style.Transform = "translate("+ tran +")";
+      con.style.WebkitTransform = "translate3d("+ tran +",0px)";
+    }
+    
+    obj = new Rtouch(con,ini);
+    obj.swipestart = function(e){
+      con.style.WebkitTransitionDuration = "0s";
+      con.style.TransitionDuration= "0s";
+      autorun ? clearInterval(setI) : 1 ;
+    };
+    
+    dir === "x" ? obj.holdx = move : obj.holdy = move;
+    obj.swipeend=function(e){
+      con.style.WebkitTransitionDuration = time;
+      con.style.TransitionDuration= time;
+      if (!movestates) {return};
+      -distance > base ? run(index+1) : distance > base ? run(index-1) : run(index);
+      movestates = 0;
+      autorun ? autorunfun() : 1 ;
+    };
+    autorun ? autorunfun() : 1;
+  };
+
+
+  tmove({
+    silde : document.getElementById('silde'),
+    sildebox : document.getElementById('sildebox'),
+    span : document.getElementById('silde').getElementsByTagName('span'),
+    autorun : 3000
+  });
+
+  tmove({
+    silde : document.getElementById('silde1'),
+    sildebox : document.getElementById('sildebox1'),
+    span : document.getElementById('silde1').getElementsByTagName('span'),
+    dir : "y"
+  },{
+    PREDEF : [0,1]
+  });
+
+  tmove({
+    silde : document.getElementById('silde2'),
+    sildebox : document.getElementById('sildebox2'),
+    span : document.getElementById('silde2').getElementsByTagName('span'),
+    set : 339
+  });
+
+  tmove({
+    silde : document.getElementById('silde3'),
+    sildebox : document.getElementById('sildebox3'),
+    span : document.getElementById('silde3').getElementsByTagName('span')[0],
+    fn : function(i){
+      document.getElementById('fn').innerText = "执行完成"+i;
+    }
+  });
+	</script>
+</body>
+</html>

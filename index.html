@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="renderer" content="webkit"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+	<title>Rtouch - 轻量级移动端javascript触摸框架</title>
+	<link rel="stylesheet" href="styles/default.css">
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css"> -->
+	<link class="codestyle" rel="stylesheet" href="styles/color-brewer.css">
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css">	 -->
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/sunburst.css"> -->
+	<link rel="stylesheet" href="styles/css.css">
+  <script>
+
+  </script>
+</head>
+<body>
+<h1 class="title_h1">Rtouch.js</h1>
+<p class="title_p">轻量级的javascript触摸框架  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：韧青子</p>
+<div class="title_links">
+    <a href="index.html">首页</a> • <a href="ini.html">文档</a> • <a href="demos.html">DEMOS</a> • <a href="ext.html">扩展</a>
+</div>
+
+<a href="script/Rtouch.js" target="_blank" class="downit">下载 1.49k</a>
+<div class="padbox">
+	<div class="pad" id="pad">
+		<h2 class="pad_state" id="pad_state">touchstart</h2>
+		<p class="pad_txt">X: <span id="x" class="nub pr50">0</span>Y: <span id="y" class="nub">0</span></p>
+	</div>
+</div>
+
+
+<div class="box">
+	<p class="box_p">一、引入Rtouch.js</p>
+	<pre><code class='html'>
+  &lt;script src="script/Rtouch.js"&gt;&lt;/script&gt;
+	</code></pre>
+	<p class="box_p">二、创建对象实例</p>
+	<pre><code class='javascript'>
+  var rtouch = new Rtouch(obj);    //obj对象,例：var obj = document.getElementById('box');
+  rtouch.swipeleft = function(e){   //swipeleft向左滑动的方法 可自由替换为其他 详看《<a href="#">文档</a>》
+  	//执行的代码
+  }
+	</code></pre>
+
+</div>
+
+
+	<script src="script/jquery-2.1.1.min.js"></script>
+	<script src="script/highlight.pack.js"></script>
+	<script src="script/Rtouch.js"></script>
+	<script>
+	hljs.initHighlightingOnLoad();
+
+	(function(){
+		var pad = document.getElementById('pad'),
+				rtouch = new Rtouch(pad,{
+	        PREDEF : [1,1]
+	      }),
+				title = document.getElementById('pad_state'),
+				x = document.getElementById('x'),
+				y = document.getElementById('y');
+		rtouch.tap = 
+		rtouch.swipeleft = rtouch.holdleft = 
+		rtouch.swiperight = rtouch.holdright = 
+		rtouch.swipetop = rtouch.holdtop = 
+		rtouch.swipedown = rtouch.holddown = even;
+		function even(e){
+			title.innerText = e.type;
+			x.innerText = e.x;
+			y.innerText = e.y;
+		}
+	}());
+	</script>
+</body>
+</html>

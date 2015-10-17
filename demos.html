@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="renderer" content="webkit"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+	<title>Rtouch demos</title>
+	<link rel="stylesheet" href="styles/default.css">
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css"> -->
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/color-brewer.css"> -->
+	<!-- <link class="codestyle" rel="stylesheet" href="styles/railscasts.css">	 -->
+	<link class="codestyle" rel="stylesheet" href="styles/sunburst.css">
+	<link rel="stylesheet" href="styles/css.css">
+  <script>
+
+  </script>
+</head>
+<body>
+<h1 class="title_h1">Rtouch.js</h1>
+<p class="title_p">轻量级的javascript触摸框架  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：韧青子</p>
+<div class="title_links">
+    <a href="index.html">首页</a> • <a href="ini.html">文档</a> • <a href="demos.html">DEMOS</a> • <a href="ext.html">扩展</a>
+</div>
+
+<div class="box">
+  <h2 id="a1" class="demo_title">swipeleft - swiperight - swipetop - swipedown 例子</h2>
+  
+  <div class="ballbox" id="box1">
+    <div class="ball td200"  id="ball1">swipe</div>
+  </div>
+
+  <pre><code class='javascript'>
+  var box = document.getElementById('box1'),
+      ball = document.getElementById('ball1'),
+      rtouch = new Rtouch(box,{
+        PREDEF : [1,1]
+      });
+      rtouch.swipeleft = function(e){
+        ball.style.webkitTransform = 'translate3d(-300px,0,0)'; 
+      }
+      rtouch.swiperight = function(e){
+        ball.style.webkitTransform = 'translate3d(300px,0,0)'; 
+      }
+      rtouch.swipetop = function(e){
+        ball.style.webkitTransform = 'translate3d(0,-100px,0)'; 
+      }
+      rtouch.swipedown = function(e){
+        ball.style.webkitTransform = 'translate3d(0,100px,0)'; 
+      }
+  </code></pre>
+
+  <h2 id="a2" class="demo_title">holdx - holdy 例子</h2>
+  
+  <div class="ballbox" id="box2">
+    <div class="ball ball1"  id="ball2">holdx(y)</div>
+  </div>
+
+  <pre><code class='javascript'>
+  var ball = document.getElementById('ball2'),
+      rtouch = new Rtouch(ball,{
+        PREDEF : [1,1]
+      });
+      rtouch.holdx = function(e){
+        ball.style.webkitTransform = 'translate3d('+(e.x-e.cX)+'px,0,0)'; 
+      }
+      rtouch.holdy = function(e){
+        ball.style.webkitTransform = 'translate3d(0,'+(e.y-e.cY)+'px,0)'; 
+      }
+  </code></pre>
+
+  <h2 id="a3" class="demo_title">hold 例子</h2>
+  
+  <div class="ballbox" id="box3">
+    <div class="ball"  id="ball3">hold</div>
+  </div>
+
+  <pre><code class='javascript'>
+  var ball = document.getElementById('ball3'),
+      rtouch = new Rtouch(ball,{
+        PREDEF : [1,1]
+      });
+      rtouch.hold = function(e){
+        ball.style.webkitTransform = 'translate3d('+(e.x-e.cX)+'px,'+(e.y-e.cY)+'px,0)'; 
+      }
+  </code></pre>
+</div>
+
+
+	<script src="script/jquery-2.1.1.min.js"></script>
+	<script src="script/highlight.pack.js"></script>
+	<script src="script/Rtouch.js"></script>
+	<script>
+	hljs.initHighlightingOnLoad();
+  (function(){
+    var box = document.getElementById('box1'),
+      ball = document.getElementById('ball1'),
+      rtouch = new Rtouch(box,{
+        PREDEF : [1,1]
+      }),
+      hui = function(e){
+        ball.innerText = e.type,
+        setTimeout(function(){ball.style.webkitTransform = 'translate3d(0,0,0)'},500);
+      };
+      rtouch.swipeleft = function(e){
+        ball.style.webkitTransform = 'translate3d(-300px,0,0)'; 
+        hui(e);
+      }
+      rtouch.swiperight = function(e){
+        ball.style.webkitTransform = 'translate3d(300px,0,0)'; 
+        hui(e);
+      }
+      rtouch.swipetop = function(e){
+        ball.style.webkitTransform = 'translate3d(0,-100px,0)'; 
+        hui(e);
+      }
+      rtouch.swipedown = function(e){
+        ball.style.webkitTransform = 'translate3d(0,100px,0)'; 
+        hui(e);
+      }
+  }());
+
+  (function(){
+    var ball = document.getElementById('ball2'),
+      rtouch = new Rtouch(ball,{
+        PREDEF : [1,1]
+      }),
+      hui = function(e){
+        setTimeout(function(){ball.style.webkitTransform = 'translate3d(0,0,0)'},500);
+      };
+      rtouch.holdx = function(e){
+        ball.innerText = e.type;
+        ball.style.webkitTransform = 'translate3d('+(e.x-e.cX)+'px,0,0)'; 
+      }
+      rtouch.holdy = function(e){
+        ball.innerText = e.type;
+        ball.style.webkitTransform = 'translate3d(0,'+(e.y-e.cY)+'px,0)'; 
+      }
+      rtouch.swipeend = hui;
+  }());
+
+  (function(){
+  var ball = document.getElementById('ball3'),
+      rtouch = new Rtouch(ball,{
+        PREDEF : [1,1]
+      }),
+      hui = function(e){
+        setTimeout(function(){ball.style.webkitTransform = 'translate3d(0,0,0)'},500);
+      };
+      rtouch.hold = function(e){
+        ball.innerText = e.type;
+        ball.style.webkitTransform = 'translate3d('+(e.x-e.cX)+'px,'+(e.y-e.cY)+'px,0)'; 
+      }
+      rtouch.swipeend = hui;
+  }());
+	</script>
+</body>
+</html>
